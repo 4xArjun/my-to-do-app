@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>lo-fi tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --glass-bg:rgba(255,255,255,0.12);
+  --glass-border:rgba(255,255,255,0.25);
+  --glass-shadow:0 8px 32px rgba(0,0,0,0.25);
+  --text:#fff;
+  --text-muted:rgba(255,255,255,0.65);
+  --accent:#ffd97d;
+  --accent2:#a8e6cf;
+  --ring-done:#a8e6cf;
+  --input-bg:rgba(255,255,255,0.08);
+  --task-done:rgba(255,255,255,0.35);
+  --radius:18px;
+  --font:'Poppins',sans-serif;
+}
+body{font-family:var(--font);min-height:100vh;color:var(--text);transition:background 0.7s ease;overflow-x:hidden}
+body.bg-forest{background:linear-gradient(135deg,#1a2e1a 0%,#2d4a2d 40%,#1a3320 70%,#0f1f0f 100%)}
+body.bg-forest::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E") repeat;pointer-events:none;z-index:0}
+body.bg-gradient{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 70%,#533483 100%)}
+body.bg-cafe{background:linear-gradient(135deg,#2c1810 0%,#3d2314 40%,#4a2c1a 70%,#1a0f08 100%)}
+body.bg-cafe::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(255,180,80,0.12) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(255,120,50,0.08) 0%,transparent 50%);pointer-events:none;z-index:0}
+body.bg-space{background:linear-gradient(135deg,#000005 0%,#0a0015 40%,#050020 70%,#000010 100%)}
+body.bg-space::before{content:'';position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,0.8) 0%,transparent 100%),radial-gradient(1px 1px at 25% 55%,rgba(255,255,255,0.6) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 40% 30%,rgba(255,255,255,0.9) 0%,transparent 100%),radial-gradient(1px 1px at 60% 70%,rgba(255,255,255,0.7) 0%,transparent 100%),radial-gradient(1px 1px at 75% 20%,rgba(255,255,255,0.8) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 85% 50%,rgba(255,255,255,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 92% 80%,rgba(255,255,255,0.9) 0%,transparent 100%),radial-gradient(1px 1px at 15% 85%,rgba(255,255,255,0.5) 0%,transparent 100%),radial-gradient(1px 1px at 50% 10%,rgba(255,255,255,0.7) 0%,transparent 100%),radial-gradient(1px 1px at 70% 90%,rgba(255,255,255,0.6) 0%,transparent 100%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:24px 16px 100px}
+.glass{background:var(--glass-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:var(--radius);box-shadow:var(--glass-shadow)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.header h1{font-size:1.6rem;font-weight:600;letter-spacing:-0.02em;color:var(--accent)}
+.header .sub{font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--text-muted);margin-top:2px}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ring-wrap span{font-size:0.7rem;font-family:'DM Mono',monospace;color:var(--text-muted)}
+.ring svg{width:54px;height:54px}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.15);stroke-width:4}
+.ring-fg{fill:none;stroke:var(--ring-done);stroke-width:4;stroke-linecap:round;stroke-dasharray:138;stroke-dashoffset:138;transition:stroke-dashoffset 0.6s ease;transform:rotate(-90deg);transform-origin:center}
+.ring-text{font-size:10px;fill:var(--text);font-family:'Poppins',sans-serif;font-weight:500;dominant-baseline:middle;text-anchor:middle}
+.themes{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.theme-btn{font-family:'DM Mono',monospace;font-size:0.68rem;padding:6px 12px;border-radius:20px;border:1px solid var(--glass-border);background:var(--input-bg);color:var(--text-muted);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.theme-btn:hover,.theme-btn.active{background:var(--glass-border);color:var(--text);border-color:rgba(255,255,255,0.5)}
+.input-group{padding:20px;margin-bottom:20px}
+.input-row{display:flex;gap:10px;margin-bottom:12px}
+.input-row input,.date-input{flex:1;padding:10px 14px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.input-row input::placeholder{color:var(--text-muted)}
+.input-row input:focus,.date-input:focus{border-color:rgba(255,255,255,0.5)}
+.date-input{color:var(--text-muted);font-size:0.8rem;min-width:140px;flex:0 0 auto}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(1);opacity:0.6;cursor:pointer}
+.add-btn{padding:10px 18px;border-radius:10px;border:none;background:var(--accent);color:#1a1a1a;font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.1s;white-space:nowrap}
+.add-btn:hover{opacity:0.85}
+.add-btn:active{transform:scale(0.96)}
+.group-label{font-size:0.7rem;font-family:'DM Mono',monospace;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:18px 0 10px;padding:0 4px;display:flex;align-items:center;gap:8px}
+.group-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1)}
+.task{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;margin-bottom:8px;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);animation:slideIn 0.3s ease;transition:opacity 0.3s,transform 0.3s}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.task.removing{opacity:0;transform:translateX(20px)}
+.task.done-task{opacity:0.5}
+.task.done-task .task-text{text-decoration:line-through;color:var(--text-muted)}
+.task-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.4);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:background 0.2s,border-color 0.2s}
+.task-cb.checked{background:var(--accent2);border-color:var(--accent2)}
+.task-cb.checked::after{content:'✓';font-size:11px;color:#1a1a1a;font-weight:700;line-height:1}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:0.9rem;font-weight:400;word-break:break-word}
+.task-due{font-size:0.7rem;font-family:'DM Mono',monospace;color:var(--text-muted);margin-top:3px}
+.task-due.overdue{color:#ff8b8b}
+.task-actions{display:flex;gap:4px;flex-shrink:0}
+.task-btn{background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;color:rgba(255,255,255,0.4);font-size:14px;line-height:1;transition:color 0.15s,background 0.15s}
+.task-btn:hover{color:#fff;background:rgba(255,255,255,0.1)}
+.task-btn.del:hover{color:#ff8b8b}
+.edit-input{background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-family:var(--font);font-size:0.9rem;outline:none;width:100%}
+.empty{text-align:center;padding:32px;font-family:'DM Mono',monospace;font-size:0.8rem;font-style:italic;color:var(--text-muted)}
+.pomo-toggle{position:fixed;bottom:24px;right:24px;z-index:100;width:48px;height:48px;border-radius:50%;background:var(--glass-bg);backdrop-filter:blur(12px);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;box-shadow:var(--glass-shadow);transition:transform 0.2s}
+.pomo-toggle:hover{transform:scale(1.1)}
+.pomo-panel{position:fixed;bottom:82px;right:24px;z-index:100;width:220px;padding:20px;transition:opacity 0.3s,transform 0.3s}
+.pomo-panel.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
+.pomo-label{font-size:0.65rem;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:8px}
+.pomo-time{font-size:2.4rem;font-family:'DM Mono',monospace;font-weight:300;color:var(--accent);letter-spacing:0.05em;text-align:center;margin:8px 0}
+.pomo-phase{font-size:0.7rem;font-family:'DM Mono',monospace;color:var(--text-muted);text-align:center;margin-bottom:12px}
+.pomo-btns{display:flex;gap:8px;justify-content:center}
+.pomo-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--glass-border);background:var(--input-bg);color:var(--text);font-family:'DM Mono',monospace;font-size:0.72rem;cursor:pointer;transition:background 0.15s}
+.pomo-btn:hover{background:var(--glass-border)}
+.pomo-btn.primary{background:var(--accent);color:#1a1a1a;border-color:var(--accent);font-weight:600}
+@media(max-width:520px){.input-row{flex-wrap:wrap}.date-input{min-width:100%;flex:1 1 100%}.add-btn{width:100%}.header h1{font-size:1.2rem}}
+</style>
+</head>
+<body class="bg-forest">
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>lo-fi tasks ✦</h1>
+      <div class="sub" id="date-label"></div>
+    </div>
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 48 48">
+          <circle class="ring-bg" cx="24" cy="24" r="22"/>
+          <circle class="ring-fg" id="ring-fg" cx="24" cy="24" r="22"/>
+          <text class="ring-text" x="24" y="24" id="ring-pct">0%</text>
+        </svg>
+      </div>
+      <span>today</span>
+    </div>
+  </div>
+  <div class="themes">
+    <button class="theme-btn active" data-bg="bg-forest">🌿 Forest</button>
+    <button class="theme-btn" data-bg="bg-gradient">🌌 Gradient</button>
+    <button class="theme-btn" data-bg="bg-cafe">☕ Lo-Fi Café</button>
+    <button class="theme-btn" data-bg="bg-space">🪐 Deep Space</button>
+  </div>
+  <div class="glass input-group">
+    <div class="input-row">
+      <input type="text" id="task-input" placeholder="what needs to get done…"/>
+      <input type="date" id="date-input" class="date-input"/>
+    </div>
+    <button class="add-btn" onclick="addTask()">+ add task</button>
+  </div>
+  <div id="task-list"></div>
+</div>
+<div class="pomo-toggle glass" onclick="togglePomo()" title="Focus Timer">⏱</div>
+<div class="pomo-panel glass hidden" id="pomo-panel">
+  <div class="pomo-label">focus timer</div>
+  <div class="pomo-time" id="pomo-time">25:00</div>
+  <div class="pomo-phase" id="pomo-phase">🎯 focus session</div>
+  <div class="pomo-btns">
+    <button class="pomo-btn primary" id="pomo-start" onclick="pomoCycle()">start</button>
+    <button class="pomo-btn" onclick="pomoReset()">reset</button>
+  </div>
+</div>
+<script>
+let tasks=JSON.parse(localStorage.getItem('lf_tasks')||'[]');
+let bg=localStorage.getItem('lf_bg')||'bg-forest';
+document.body.className=bg;
+document.querySelectorAll('.theme-btn').forEach(b=>{b.classList.toggle('active',b.dataset.bg===bg)});
+const today=new Date();
+document.getElementById('date-label').textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}).toLowerCase();
+const dateInput=document.getElementById('date-input');
+dateInput.value=today.toISOString().split('T')[0];
+document.querySelectorAll('.theme-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    bg=btn.dataset.bg;document.body.className=bg;localStorage.setItem('lf_bg',bg);
+    document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+function saveTasks(){localStorage.setItem('lf_tasks',JSON.stringify(tasks))}
+function addTask(){
+  const input=document.getElementById('task-input');
+  const text=input.value.trim();
+  if(!text)return;
+  tasks.push({id:Date.now(),text,due:dateInput.value,done:false,created:new Date().toISOString()});
+  input.value='';saveTasks();render();
+}
+function toggleDone(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;saveTasks();render()}}
+function deleteTask(id){
+  const el=document.getElementById('task-'+id);
+  if(el){el.classList.add('removing');setTimeout(()=>{tasks=tasks.filter(t=>t.id!==id);saveTasks();render()},280)}
+}
+function startEdit(id){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  const span=document.querySelector(`#task-${id} .task-text`);
+  const orig=t.text;
+  span.innerHTML=`<input class="edit-input" value="${escHtml(t.text)}"/>`;
+  const inp=span.querySelector('input');inp.focus();inp.select();
+  function commit(){t.text=inp.value.trim()||orig;saveTasks();render()}
+  inp.addEventListener('blur',commit);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){t.text=orig;render()}});
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function formatDate(str){if(!str)return '';const d=new Date(str+'T12:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function classify(due){
+  if(!due)return 'upcoming';
+  const t=new Date();t.setHours(0,0,0,0);
+  const tom=new Date(t);tom.setDate(t.getDate()+1);
+  const d=new Date(due+'T00:00:00');
+  if(d<t)return 'overdue';
+  if(d.toDateString()===t.toDateString())return 'today';
+  if(d.toDateString()===tom.toDateString())return 'tomorrow';
+  return 'upcoming';
+}
+function render(){
+  const container=document.getElementById('task-list');
+  const groups={overdue:[],today:[],tomorrow:[],upcoming:[]};
+  tasks.forEach(t=>groups[classify(t.due)].push(t));
+  const labelMap={overdue:'⚠ overdue',today:'today',tomorrow:'tomorrow',upcoming:'upcoming'};
+  let html='';
+  for(const[key,label]of Object.entries(labelMap)){
+    const list=groups[key];if(!list.length)continue;
+    html+=`<div class="group-label">${label}</div>`;
+    list.forEach(t=>{
+      const cls=t.done?'done-task':'';const cbCls=t.done?'checked':'';
+      const overdueCls=key==='overdue'&&!t.done?'overdue':'';
+      html+=`<div class="task ${cls}" id="task-${t.id}">
+        <div class="task-cb ${cbCls}" onclick="toggleDone(${t.id})"></div>
+        <div class="task-body">
+          <div class="task-text">${escHtml(t.text)}</div>
+          <div class="task-due ${overdueCls}">${t.due?'📅 '+formatDate(t.due):''}</div>
+        </div>
+        <div class="task-actions">
+          <button class="task-btn" onclick="startEdit(${t.id})" title="Edit">✏️</button>
+          <button class="task-btn del" onclick="deleteTask(${t.id})" title="Delete">✕</button>
+        </div>
+      </div>`;
+    });
+  }
+  if(!tasks.length)html=`<div class="empty">no tasks yet. add one above ✨</div>`;
+  container.innerHTML=html;updateRing();
+}
+function updateRing(){
+  const todayTasks=tasks.filter(t=>classify(t.due)==='today');
+  const done=todayTasks.filter(t=>t.done).length;const total=todayTasks.length;
+  const pct=total?Math.round((done/total)*100):0;
+  const circumference=138;const offset=circumference-(pct/100)*circumference;
+  document.getElementById('ring-fg').style.strokeDashoffset=offset;
+  document.getElementById('ring-pct').textContent=pct+'%';
+}
+let pomoVisible=false,pomoRunning=false,pomoSeconds=25*60,pomoPhase='focus',pomoInterval=null,pomoCount=0;
+function togglePomo(){pomoVisible=!pomoVisible;document.getElementById('pomo-panel').classList.toggle('hidden',!pomoVisible)}
+function renderPomoTime(){const m=Math.floor(pomoSeconds/60).toString().padStart(2,'0');const s=(pomoSeconds%60).toString().padStart(2,'0');document.getElementById('pomo-time').textContent=`${m}:${s}`}
+function pomoTick(){
+  if(pomoSeconds<=0){
+    clearInterval(pomoInterval);pomoInterval=null;pomoRunning=false;pomoCount++;
+    if(pomoPhase==='focus'){pomoPhase='break';pomoSeconds=pomoCount%4===0?15*60:5*60;document.getElementById('pomo-phase').textContent='☕ break time'}
+    else{pomoPhase='focus';pomoSeconds=25*60;document.getElementById('pomo-phase').textContent='🎯 focus session'}
+    document.getElementById('pomo-start').textContent='start';renderPomoTime();return;
+  }
+  pomoSeconds--;renderPomoTime();
+}
+function pomoCycle(){
+  if(pomoRunning){clearInterval(pomoInterval);pomoInterval=null;pomoRunning=false;document.getElementById('pomo-start').textContent='start'}
+  else{pomoInterval=setInterval(pomoTick,1000);pomoRunning=true;document.getElementById('pomo-start').textContent='pause'}
+}
+function pomoReset(){
+  clearInterval(pomoInterval);pomoInterval=null;pomoRunning=false;
+  pomoPhase='focus';pomoSeconds=25*60;pomoCount=0;
+  document.getElementById('pomo-time').textContent='25:00';
+  document.getElementById('pomo-phase').textContent='🎯 focus session';
+  document.getElementById('pomo-start').textContent='start';
+}
+document.getElementById('task-input').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+render();
+</script>
+</body>
+</html>
